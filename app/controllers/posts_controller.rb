@@ -4,7 +4,7 @@ class PostsController < ApplicationController
 
 		# Filters out sensitive title for every fifth Post
 		@posts.each_with_index do |post, index|
-			post.update!(title: "SPAM") if index == 0 || (index + 1) % 5 == 0
+			post.update!(title: "SPAM") if index % 5 == 0
 		end
   end
 
