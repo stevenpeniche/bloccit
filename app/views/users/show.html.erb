@@ -19,8 +19,44 @@
 	</div>
 </div>
 
-<h2>Posts</h2>
-<%= render @user.posts %>
+<% if user_has_any_post? %>
+	<h2>Posts</h2>
+	<%= render @user.posts %>
+<% else %>
+	<h5> <%= @user.name %> has not submitted any posts yet.</h5>
+<% end %>
 
-<h2>Comments</h2>
-<%= render @user.comments %>
+<% if user_has_any_comments? %>
+	<h2>Comments</h2>
+	<%= render @user.comments %>
+<% else %>
+	<h5> <%= @user.name %> has not commented on any posts yet.</h5>
+<% end %>
+
+<% if user_has_any_favorites? %>
+	<h2>Favorites</h2>
+	<% @favorites_post_array.each do |favorite| %>
+		<div class="media">
+			<%= render partial: 'votes/voting', locals: { post: favorite } %>
+			<div class="media-body">
+				<h4 class="media-heading">
+					<%= link_to favorite.title, topic_post_path(favorite.topic, favorite) %>
+				</h4>
+				<small>
+					submitted <%= time_ago_in_words(favorite.created_at) %> ago by <%= favorite.user.name %>
+					<% favorite_post_user_id = User.find(favorite.user_id) %>
+					<% avatar_url = favorite_post_user_id.avatar_url(30) %>
+					<% if avatar_url %>
+						<div class="media-left">
+							<%= image_tag avatar_url, class: 'media-object' %>
+						</div>
+					<% end %>
+					<br>
+					<%= favorite.comments.count %> Comments
+				</small>
+			</div>
+		</div>
+	<% end %>
+<% else %>
+	<h5> <%= @user.name %> has not favorited any posts yet.</h5>
+<% end %>
